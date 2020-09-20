@@ -19,6 +19,8 @@ foreach (@contenido) {
 # Variables globales
 $parser = Apache::Log::Parser->new( fast => 1 ); # Se crea el parser
 %conteo = (); # Hash que tiene las veces que aparece un host en en log
+%ips = ();
+open(LISTA, "+>", "ips.txt");
 
 # Se hace y llena el hash de los meses con su digito
 %mesesValor = ();
@@ -34,17 +36,26 @@ open(LOG_APACHE, $rutaLog); #$valores{"log"}
 #pop(@lineas);
 foreach (@lineas) {
     $log = $parser->parse($_);
-    #print $log->{rhost}, "\n";
     #print $log->{agent}, "\n"; 
-    #print $log->{time}, "\n";
-    #print $log->{date}, "\n";
     #print $log->{path}, "\n";
+    $timestamp = $log->{rhost} ." - " . $log->{time} . " - " . $log->{date} . "\n";
+    if (exists($ips{$timestamp})) {
+        $cont = $ips{$timestamp};
+        if ($cont >= $valores{"attempts"}) {next;}
+        $cont++;
+        $ips{$timestamp} = $cont;
+        if($ips{$timestamp} >= $valores{"attempts"}) {
+            print("[+] Posible FB: $timestamp");
+            print LISTA ("$timestamp\n");
+        }
+    } else {
+        $ips{$timestamp} = 1;
+    }
+    #print $timestamp, "\n";
     @fecha = split("/", $log->{date});
     @tiempo = split(":", $log->{time});
-    print("$tiempo[2],$tiempo[1],$tiempo[0],$fecha[0],$mesesValor{$fecha[1]},$fecha[2]\n");
-    $epochtime = timegm($tiempo[2],$tiempo[1],$tiempo[0],$fecha[0],$mesesValor{$fecha[1]},$fecha[2]);
-    $valorTiempo = $epochtime + 10;
-    #print("$epochtime - $valorTiempo\n");
+    #$epochtime = timegm($tiempo[2],$tiempo[1],$tiempo[0],$fecha[0],$mesesValor{$fecha[1]},$fecha[2]); # La fecha en epoch xd
+    #$valorTiempo = $epochtime + 10; # Para sumar segundos al timestamp encontrado
     if (exists($conteo{$log->{rhost}})){
         $cont = $conteo{$log->{rhost}};
         $cont++;
