@@ -12,14 +12,14 @@ use feature qw(say);
 use Data::Printer;
 
 my $blockTime = 1; # 1 min de bloqueo
-my $ipBlocker = new IPBlocker($blockTime);
+my $ipBlocker = new IPBlocker($blockTime, '/var/log/apache2_eq2.log');
 
-# Bloqueamos IPs
-$ipBlocker->blockIPs(@{ [
-  { ip => '192.168.145.211', time => time },
-  { ip => '192.168.145.212', time => time },
-  { ip => '192.168.145.213', time => time },
-] });
+# Bloqueamos múltiples IPs
+$ipBlocker->blockIPs(@{ [ '192.168.145.211', '192.168.145.212',
+  '192.168.145.213' ] });
+
+# Bloqueamos una sola IP
+$ipBlocker->blockIP('192.168.145.214');
 
 say "Tiempo de bloqueo: ", $ipBlocker->getBlockTime(), " minuto(s).";
 
