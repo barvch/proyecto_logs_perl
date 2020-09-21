@@ -18,25 +18,35 @@ foreach (@contenido) {
 
 # Variables globales
 $parser = Apache::Log::Parser->new( fast => 1 ); # Se crea el parser para los logs de Apache/Nginx
-
-# Se hace y llena el hash de los meses con su digito
-%mesesValor = (); # Hash que tendrá como llaves @meses y como valores @digitos, para cada valor respectivo
-@meses = qw(Jan Feb Mar Apr May Jun Jul Ago Sep Oct Nov Dec);
-@digitos  =  qw(01 02 03 04 05 06 07 08 09 10 11 12);
-@mesesValor{@meses} = @digitos; # Se asigna llave y valor dentro de hash
-
-
-# Se define la ruta del log a revisar
-
 #$rutaLog = $valores{"log"}; # se usa la ruta del diccionario
-#$rutaLog = "ejemplo.log";
-$rutaLog = "/var/log/apache2/access.log.1";
-
+$rutaLog = "ejemplo.log";
+#$rutaLog = "/var/log/apache2/access.log.1";
+$bandera = 0; # Sirve para indicar si es la primera vez que se ingresa al bucle infinito
 while(1) {
+    if ($bandera == 0) { # Si es la primera vez que se ingresa al bucle
+        $noLineasUltimoMonitoreo = `cat $rutaLog | wc | cut -d " " -f 6`; # Se calcula la contidad de lineas actuales del log a revisar
+        chomp($noLineasUltimoMonitoreo);
+        #print("Se han encontrado $noLineasUltimoMonitoreo lineas en el log.\n");
+        $lineasPorRevisar = qx/tail -$noLineasUltimoMonitoreo $rutaLog/; # Se leen todas las lineas del log
+        @lineas = split("\n", $lineasPorRevisar); # Se separa linea por linea
+        $bandera = 1; # Se actualiza el valor de la bandera para que no caiga en este if nunca más
+    } else {
+        $noLineasActuales = `cat $rutaLog | wc | cut -d " " -f 6`; # Se leen todas las lineas del log actualizado
+        chomp($noLineasActuales);
+        $lineasNuevas =  $noLineasActuales - $noLineasUltimoMonitoreo; # Se calculan las nuevas lineas que han sido generadas en el log desde la ultima revisión
+        if ($lineasNuevas == 0) { # Si no hay diferencia, simplemente se espera para la siguiente revisión
+            #print ("No se han encontrado nuevos regitros dentro del log, esperando cambios...\n");
+            sleep($valores{"time"});
+            next;
+        }
+        #print("Se han encontrado $lineasNuevas nuevas lineas dentro del log\n");
+        # En caso de encontrar nuevas líneas en el log
+        $lineasPorRevisar = qx/tail -$lineasNuevas $rutaLog/; # Se leen las nuevas líneas encontradas en el log
+        @lineas = split("\n", $lineasPorRevisar); # Se separa linea por linea
+        $noLineasUltimoMonitoreo = $noLineasActuales; # Se actualiza el valor del total de líneas leídas en la última revisión
+    }
     open(LISTA, "+>", "ips.txt"); # Se abre el archivo donde se almacenarán las IPs a bloquear en modo de sobre escritura
-    $lineasPorRevisar = qx/tail -200 $rutaLog/; # Se leen las últimas 200 lineas del archivo log indicado en el archivo de configuración
-    @lineas = split("\n", $lineasPorRevisar); # Se separa linea por linea
-    %ips = (); # Hash que contiene el timestamp y el conteo de este timestamp de todas las peticiones que se encuentren en en log
+    %ips = (); # Reset al hash que contiene el timestamp y el no. de veces que aparece
     foreach (@lineas) {
         $log = $parser->parse($_); # Se hace el parsing de la linea actual del log
         $timestamp = $log->{rhost} ." - " . $log->{time} . " - " . $log->{date} . "\n"; # Se genera un timestamp de la linea actual. [HOST - HORA - FECHA]

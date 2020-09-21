@@ -62,3 +62,9 @@
 91.145.129.90 - - [15/Mar/2019:08:19:13 +0100] "GET /public/public/img/slide1.jpg?v=201702271112 HTTP/1.1" 404 512 "http://31.24.133.32/gamesportsbar/authorization/index/login?return=/gamesportsbar/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
 91.145.129.90 - - [15/Mar/2019:08:19:13 +0100] "GET /public/public/img/footer_border.png HTTP/1.1" 404 516 "http://31.24.133.32/gamesportsbar/authorization/index/login?return=/gamesportsbar/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
 91.145.129.90 - - [15/Mar/2019:08:19:13 +0100] "GET /public/public/img/facebook_con_arrow.png HTTP/1.1" 404 522 "http://31.24.133.32/gamesportsbar/authorization/index/login?return=/gamesportsbar/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
+2001:888:197d:0:250:fcff:fe23:3879 - - [10/Aug/2003:20:28:01 +0200] "GET /ipv6/mysql/ipv6.php?CMD=REDIRECT&CD=7443&HOST=owl.ip6.fc.ul.pt HTTP/1.1" 200 472
+2001:888:197d:0:250:fcff:fe23:3879 - - [10/Aug/2003:20:28:01 +0200] "GET /ipv6/mysql/ipv6.php?CMD=REDIRECT&CD=7443&HOST=owl.ip6.fc.ul.pt HTTP/1.1" 200 472
+2001:888:197d:0:250:fcff:fe23:3879 - - [10/Aug/2003:20:28:01 +0200] "GET /ipv6/mysql/ipv6.php?CMD=REDIRECT&CD=7443&HOST=owl.ip6.fc.ul.pt HTTP/1.1" 200 472
+2001:888:197d:0:250:fcff:fe23:3879 - - [10/Aug/2003:20:28:01 +0200] "GET /ipv6/mysql/ipv6.php?CMD=REDIRECT&CD=7443&HOST=owl.ip6.fc.ul.pt HTTP/1.1" 200 472
+2001:888:197d:0:250:fcff:fe23:3879 - - [10/Aug/2003:20:28:01 +0200] "GET /ipv6/mysql/ipv6.php?CMD=REDIRECT&CD=7443&HOST=owl.ip6.fc.ul.pt HTTP/1.1" 200 472
+2001:888:197d:0:250:fcff:fe23:3879 - - [10/Aug/2003:20:28:01 +0200] "GET /ipv6/mysql/ipv6.php?CMD=REDIRECT&CD=7443&HOST=owl.ip6.fc.ul.pt HTTP/1.1" 200 472
