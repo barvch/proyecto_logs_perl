@@ -68,3 +68,38 @@ while(1) {
     }
     sleep($valores{"time"}); # Se esperan n segundos para volver a revisar el log de apache.
 }
+
+=head1 Documentacion para leerArchivoConf.pl
+
+En este a archivo, se hace un parsing del log del servicio indicando (Apache/NGINX) dentro del archivo de configuracion B<(servicio_eq2.conf)> y se determinan las direcciones IP de los clientes que estan haciendo un ataque de fuerza bruta
+
+=head2 Obtencion de datos - Mecanica de lectura del log
+
+Por cada ronda de monitoreo, se leen unicamente las nuevas lineas agregadas al log del servicio.  
+
+De las lineas obtenidas para la ronda actual, se lee linea por linea y se obtienen los siguientes datos pertinentes:
+
+B<Direccion IP> del Host que se conecta al servidor web ($log->{rhost}).
+
+B<Hora> (UTC) en la que que llega la peticion al servidor en el formato HH:MM:SS  ($log->{time}).
+
+B<Fecha> en la que llega la peticion al servidor web en formato DD/MM/AAAA ($log->{date}).
+
+
+=head2 Analisis de datos y deteccion de ataques
+
+La conjuncion de los 3 datos resultantes del parsing del log, se genera una llave para cada una de las lineas leidas con la siguiente nomenclatura:
+
+ [IP] - [HORA] - [FECHA]
+
+Por ejemplo:
+
+ 192.168.123.45 - 08:45:23 - 19/09/2020
+
+Dicha llave, es almacenada dentro de un hash y como valor asociado, el numero de ocurrencias que se vayan detectando de la llave a la hora de recorrer linea por linea del log.
+
+B<Cuando el numero de ocurrencias asociadas al timestamp excede el numero tope de intentos fallidos> indicados en el archivo de configuracion, se llama a la funcion encargada de bannear la IP.
+
+El monitoreo es realizado cada cierto tiempo, el cual puede ser indicado/modificado dentro del archivo de configuracion.
+
+=cut 
