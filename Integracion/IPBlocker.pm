@@ -8,6 +8,75 @@ package IPBlocker;
 # Author: Alexis Brayan López Matías
 ##
 
+=encoding UTF-8
+
+=head1 NAME
+
+IPBlocker - Módulo que bloquea direcciones IP.
+
+=head1 SYNOPSIS
+
+  use IPBlocker;
+  my $blockTime = 1; # 1 min de bloqueo
+  my $ipBlocker = new IPBlocker($blockTime, '/var/log/apache2_eq2.log');
+
+  #Bloqueamos múltiples IPs
+  $ipBlocker->blockIPs(@{ [ '192.168.145.211', '192.168.145.212',
+    '192.168.145.213' ] });
+
+  # Bloqueamos una sola IP
+  $ipBlocker->blockIP('192.168.145.214');
+
+=head1 DESCRIPTION
+
+Este módulo permite bloquear direcciones IP y generar registros en la bitácora
+especificada durante la creación del objeto.
+
+=head2 Methods
+
+=over 12
+
+=item C<new>
+
+Retorna un nuevo objeto IPBlocker.
+
+=item C<blockIP>
+
+Bloquea una dirección IP.
+
+=item C<blockIPs>
+
+Bloquea una lista de direcciones IP.
+
+=item C<areIPsBlocked>
+
+Verifica si una lista de direcciones IP están o no bloqueadas.
+
+=item C<isIPBlocked>
+
+Verifica si una dirección IP está bloqueada.
+
+=item C<getBlockTime>
+
+Retorna el tiempo de bloqueo utilizado.
+
+=back
+
+=head1 LICENSE
+
+Este módulo fue creado bajo una licencia artística.
+Ver L<perlartistic>.
+
+=head1 AUTHOR
+
+Equipo2 - PBSI 14G
+
+=head1 SEE ALSO
+
+L<UnblockIP>
+
+=cut
+
 use strict;
 use warnings;
 use POSIX qw(strftime);
@@ -29,10 +98,11 @@ sub new {
 
 sub DEMOLISH {
   my ($self) = @_;
-  open FW1, ">>".$self->{_logFile} or die "No se pudo escribir en la bitácora"; 
+  open FW1, ">>".$self->{_logFile} or die "No se pudo escribir en la bitácora";
   print FW1 "SERVICIO DETENIDO ".(strftime "%F %T", localtime)."\n";
   close(FW1);
 }
+
 # Bloquea una dirección IP.
 sub blockIP {
   my( $self, $ip ) = @_;
@@ -59,7 +129,7 @@ sub blockIPs {
     ."bloqueadas";
   open FW2, ">>".$self->{_logFile} or die "No se pudo escribir en la bitácora";
   # Procesamos qué IPs están o no bloqueadas
-  my %checkedIPs = $self->isIPsBlocked(@ips);
+  my %checkedIPs = $self->areIPsBlocked(@ips);
 
   # Bloqueamos cada IP no bloqueada previamente
   foreach my $ip (@ips) {
@@ -79,7 +149,7 @@ sub blockIPs {
 
 # Retorna un diccionario indicando cuáles direccions IP se encuentran
 # bloqueadas.
-sub isIPsBlocked {
+sub areIPsBlocked {
   my( $self, @ips ) = @_;
   open FR, "<BlockedIPs" or die "No se pudo abrir el archivo con las IPs "
     ."bloqueadas";
