@@ -5,13 +5,9 @@ After=syslog.target
 
 [Service]
 Type=forking
-#User=www-data
-#Group=www-data
+User=root
 #Ruta al programa...
-ExecStart=/home/rag/Desktop/apache_eq2.pl
+ExecStart=/opt/apache_eq2/apache_eq2.pl
 
 [Install]
 WantedBy=multi-user.target
-
-#systemctl --system daemon-reload
-#/etc/systemd/system/
