@@ -96,13 +96,6 @@ sub new {
   return $self;
 }
 
-sub DEMOLISH {
-  my ($self) = @_;
-  open FW1, ">>".$self->{_logFile} or die "No se pudo escribir en la bitácora";
-  print FW1 "SERVICIO DETENIDO ".(strftime "%F %T", localtime)."\n";
-  close(FW1);
-}
-
 # Bloquea una dirección IP.
 sub blockIP {
   my( $self, $ip ) = @_;
