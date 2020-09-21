@@ -112,7 +112,8 @@ sub blockIP {
   # IP no bloqueada
   if (!$self->isIPBlocked($ip)) {
     print FWR "$ip\n";
-    system("iptables -A INPUT -s ".$ip." -j DROP");
+    my $bin = ($ip =~ /:/) ? "ip6tables" : "iptables";
+    system("$bin -A INPUT -s ".$ip." -j DROP");
     print FW1 "BLOCKED - $ip - ".(strftime "%F %T", localtime)."\n";
     my $secs = strftime "%S", localtime;
     system("echo 'perl UnblockIP.pl $ip ".$self->{_logFile}." $secs' | "
@@ -136,7 +137,8 @@ sub blockIPs {
     # IP no bloqueada
     if (!$checkedIPs{$ip}) {
       print FRW "$ip\n";
-      system("iptables -A INPUT -s ".$ip." -j DROP");
+      my $bin = ($ip =~ /:/) ? "ip6tables" : "iptables";
+      system("$bin -A INPUT -s ".$ip." -j DROP");
       print FW2 "BLOCKED - $ip - ".(strftime "%F %T", localtime)."\n";
       my $secs = strftime "%S", localtime;
       system("echo 'perl UnblockIP.pl $ip ".$self->{_logFile}." $secs' | "
