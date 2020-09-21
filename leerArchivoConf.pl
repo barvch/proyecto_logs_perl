@@ -24,7 +24,7 @@ while(1) {
     if ($bandera == 0) { # Si es la primera vez que se ingresa al bucle
         $noLineasUltimoMonitoreo = `cat $rutaLog | wc | cut -d " " -f 6`; # Se calcula la contidad de lineas actuales del log a revisar
         chomp($noLineasUltimoMonitoreo);
-        $lineasPorRevisar = qx/tail -$noLineasUltimoMonitoreo $rutaLog/; # Se leen todas las lineas del log
+        $lineasPorRevisar = qx/tail -1000 $rutaLog/; # Se leen todas las lineas del log
         @lineas = split("\n", $lineasPorRevisar); # Se separa linea por linea
         $bandera = 1; # Se actualiza el valor de la bandera para que no caiga en este if nunca más
     } else {
